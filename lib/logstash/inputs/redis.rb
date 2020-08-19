@@ -59,6 +59,13 @@ module LogStash module Inputs class Redis < LogStash::Inputs::Threadable
   # Redefined Redis commands to be passed to the Redis client.
   config :command_map, :validate => :hash, :default => {}
 
+  #### New Cluster Config ####
+  # The cluster nodes of Redis server
+  config :cluster, :validate => :array, :default => []
+
+  # Able to read from any replica, the connection become read only.
+  config :replica, :validate => :boolean, :default => true
+
   public
   # public API
   # use to store a proc that can provide a Redis instance or mock
@@ -142,6 +149,14 @@ module LogStash module Inputs class Redis < LogStash::Inputs::Threadable
       :password => @password.nil? ? nil : @password.value,
       :ssl => @ssl
     }
+
+    if @cluster.any? 
+      clusterParams = {
+        :cluster => @cluster,
+        :replica => @replica
+      }
+      connectionParams = clusterParams
+    end
 
     return connectionParams.merge(baseParams)
   end
