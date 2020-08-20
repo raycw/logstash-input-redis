@@ -64,7 +64,7 @@ module LogStash module Inputs class Redis < LogStash::Inputs::Threadable
   config :cluster, :validate => :array, :default => []
 
   # Able to read from any replica, the connection become read only.
-  config :replica, :validate => :boolean, :default => true
+  config :replica, :validate => :boolean, :default => false
 
   public
   # public API
